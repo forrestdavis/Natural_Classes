@@ -1,3 +1,4 @@
+from itertools import combinations
 
 def load_features(filename):
     data = open(filename, "r")
@@ -50,17 +51,32 @@ def is_natural_class(features, inventory, group):
                     tmp.append(distinct_feats[y])
             distinct_feats = tmp
 
-    produced = inv
-    '''
-    for i in range(distinct_feats):
-        if 
+    if distinct_feats:
+        distinct_feats = check_minumum(feats, inv, group, distinct_feats)
 
-    for d_feats in distinct_feats:
-        generated = generate_sounds(feats, inv, [d_feats])
-        print generated
-    '''
+    return distinct_feats
 
-    return 0
+def check_minumum(feats, inv, group, distinct_feats):
+
+    possible_feats = (sum([map(list, combinations(distinct_feats, i)) 
+        for i in range(len(distinct_feats)+1)], []))
+
+    minimum_set = distinct_feats
+    for possible in possible_feats:
+        sounds = generate_sounds(feats, inv, possible)
+        correctSet = 1
+        #print possible
+        for sound in sounds:
+            #print sound
+            if sound not in group:
+                #print "Not in set"
+                correctSet = 0
+        if correctSet:
+            #print "Generates correct set", possible
+            if len(possible) < len(minimum_set):
+                minimum_set = possible
+
+    return minimum_set
 
 def generate_sounds(features, inventory, distinct_feats):
 
@@ -95,9 +111,11 @@ if __name__ == "__main__":
 
     features = "features.txt"
     inventory = "inventory.txt"
-    #group = ['e', 'o', 'E', 'O']
-    group = ['1', 'a']
-    is_natural_class(features, inventory, group)
+    group = ['e', 'o', 'E', 'O']
+    #group = ['1', 'a']
+    print is_natural_class(features, inventory, group)
 
+    '''
     distinct_feats = ['+Back', '-ATR']
     print generate_sounds(features, inventory, distinct_feats)
+    '''
