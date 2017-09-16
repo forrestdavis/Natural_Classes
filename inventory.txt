@@ -1,0 +1,14 @@
+#This is file for language specific inventory
+#Uses tipa package for LaTex for encoding ipa, with the exception of \o
+#here it is o|
+#
+#Format is one phoneme per line
+
+i 
+1
+u
+e
+o
+E
+O
+a

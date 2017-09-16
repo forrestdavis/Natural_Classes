@@ -1,0 +1,57 @@
+#special characters will be handled using the symbols given by the tipa
+#package for LaTex, with the exception of \o which is o| and Ln for 
+#textltailn
+#Features are from Zsiga 
+#
+#Format is phoneme (-/+/?)Feature ... where ? represents unary feature
+
+#Vowels
+i -Back +High -Low +ATR -Round
+I -Back +High -Low -ATR -Round
+e -Back -High -Low +ATR -Round
+E -Back -High -Low -ATR -Round
+ae -Back -High +Low -ATR -Round
+u +Back +High -Low +ATR +Round
+U +Back +High -Low -ATR +Round
+o +Back -High -Low +ATR +Round
+O +Back -High -Low -ATR +Round
+a +Back -High +Low -ATR -Round
+y -Back +High -Low +ATR +Round
+o| -Back -High -Low +ATR +Round
+1 +Back +High -Low -ATR -Round
+2 +Back -High -Low -ATR -Round
+
+#Consonants
+p -Syllabic +Consonantal -Sonorant -Continuant -Voice ?Labial
+pH -Syllabic +Consonantal -Sonorant -Continuant -Voice ?SG ?Labial
+b -Syllabic +Consonantal -Sonorant -Continuant +Voice ?Labial
+bH -Syllabic +Consonantal -Sonorant -Continuant +Voice ?SG ?Labial
+t -Syllabic +Consonantal -Sonorant -Continuant -Voice ?Coronal +Anterior 
+tH
+tS
+tSH
+k
+kH
+g
+q
+qH
+d
+dZ
+f
+v
+s
+z
+S
+Z
+x
+G
+X
+m
+n
+Ln
+N
+:N
+w
+l
+:R
+j
