@@ -34,7 +34,9 @@ def load_inventory(filename):
 
 #This will take as input a collection of sounds and then 
 #returns the list of distinctive features if true, else []
-def is_natural_class(features, inventory, group):
+#If verbose is True, then will return unmaximized distinct
+#features and maximized
+def is_natural_class(features, inventory, group, verbose=False):
     inv = load_inventory(inventory)
     feats = load_features(features)
 
@@ -64,6 +66,10 @@ def is_natural_class(features, inventory, group):
     if notSet:
         distinct_feats = []
 
+    #If verbose return the full set and minimum set
+    if verbose:
+        return distinct_feats, check_minumum(feats, inv, group, distinct_feats)
+
     #If valid set, then minimize feature space
     if distinct_feats:
         distinct_feats = check_minumum(feats, inv, group, distinct_feats)
@@ -85,7 +91,6 @@ def check_minumum(feats, inv, group, distinct_feats):
         correctSet = 1
         for sound in sounds:
             if sound not in group:
-                #print "Not in set"
                 correctSet = 0
         if correctSet:
             if len(possible) < len(minimum_set):
@@ -114,6 +119,11 @@ def generate_sounds(features, inventory, distinct_feats):
         for d_feats in distinct_feats:
             if d_feats not in feats[sound]:
                 notGenerated = 1
+        '''
+        for feat in feats[sound]:
+            if feat not in distinct_feats:
+                notGenerated = 1
+        '''
         if not notGenerated:
             generated.append(sound)
 
@@ -126,43 +136,63 @@ def generate_natural_class(feats, inventory):
 
     return 0
 
+#Function that returns information about the minimizations
+#of distinct feature sets from a list of groups of sounds
+def diagnostics(features, inventory, groups, output_file):
+    
+    output = open(output_file, 'w')
+    counts = {}
+    combinations = []
+    for group in groups:
+        p_feats, min_feats = is_natural_class(features, 
+                inventory, group, True)
+        output.write("Group: "+'['+",".join(group) +']')
+        output.write("\n\tBefore Minimization: "+'['+",".join(p_feats) +']')
+
+        for feat in p_feats:
+            if feat not in min_feats:
+                if feat not in counts:
+                    counts[feat] = 1
+                else:
+                    counts[feat] += 1
+                output.write("\n\tRemoved Feature: "+feat)
+        output.write("\n\tAfter Minimization: "+'['+','.join(min_feats)+']')
+
+        output.write("\n\tNumber of combinations "+str(2**len(p_feats)))
+
+        output.write("\n---------------------------------\n")
+
+        combinations.append(2**len(p_feats))
+
+    output.write("Counts for each removed feature:\n")
+    for f in counts:
+        output.write(f+": "+str(counts[f])+'\n')
+
+    output.write("\n---------------------------------\n")
+
+    output.write("Average number of considered combinations: "+ 
+            str(sum(combinations)/len(combinations)))
+
+    output.close()
+
 if __name__ == "__main__":
 
     features = "features.txt"
     inventory = "inventory.txt"
+    output = "output"
 
-    group = ['p', 'pH', 'b', 'f', 'v', 'm']
+    group = ['p']
     print group, is_natural_class(features, inventory, group)
 
-    group = ['pH', 'tH', 'tSH', 'kH', 'qH']
-    print group, is_natural_class(features, inventory, group)
 
-    group = ['k', 'q', 'kH', 'qH']
-    print group, is_natural_class(features, inventory, group)
-
-    group = ['b', 'd', 'dZ', 'g']
-    print group, is_natural_class(features, inventory, group)
-
-    group = ['s', 'z', 'S', 'Z']
-    print group, is_natural_class(features, inventory, group)
-
-    group = ['m', 'n', 'Ln', ':N', 'N', 'w', 'l', ':R', 'j']
-    print group, is_natural_class(features, inventory, group)
-
-    group = ['Ln', ':R']
-    print group, is_natural_class(features, inventory, group)
-
-    group = ['1', 'a']
-    print group, is_natural_class(features, inventory, group)
-
-    group = ['e', 'o', 'E', 'O']
-    print group, is_natural_class(features, inventory, group)
-
-    group = ['tH', 'd']
-    print group, is_natural_class(features, inventory, group)
-
-    '''
-    #distinct_feats = ['-Syllabic', '+Consonantal', '-Sonorant', '-Continuant', '?Coronal', '+Anterior', '-Distributive']
-    distinct_feats = ['+Sonorant', '-Anterior']
-    print generate_sounds(features, inventory, distinct_feats)
-    '''
+    groups = [['p', 'pH', 'b', 'f', 'v', 'm'],
+            ['pH', 'tH', 'tSH', 'kH', 'qH'],
+            ['k', 'q', 'kH', 'qH'],
+            ['b', 'd', 'dZ', 'g'],
+            ['s', 'z', 'S', 'Z'],
+            ['m', 'n', 'Ln', ':N', 'N', 'w', 'l', ':R', 'j'], 
+            ['Ln', ':R'], 
+            ['1', 'a'],
+            ['e', 'o', 'E', 'O'],
+            ['tH', 'd']]
+    diagnostics(features, inventory, groups, output)

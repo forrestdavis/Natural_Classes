@@ -51,7 +51,7 @@ n -Syllabic +Consonantal +Sonorant -Continuant ?Nasal +Voice ?Coronal +Anterior 
 Ln -Syllabic +Consonantal +Sonorant -Continuant ?Nasal +Voice ?Coronal -Anterior ?Dorsal -Back +High -Low
 N -Syllabic +Consonantal +Sonorant -Continuant ?Nasal +Voice ?Dorsal +Back -High +Low
 :N -Syllabic +Consonantal +Sonorant -Continuant ?Nasal +Voice ?Dorsal  +Back +High -Low
-w -Syllabic -Consonantal +Sonorant +Continuant +Voice ?Labial +Back +High -Low
+w -Syllabic -Consonantal +Sonorant +Continuant +Voice ?Labial +Back +High -Low +Round
 l -Syllabic +Consonantal +Sonorant +Continuant ?Lateral +Voice ?Coronal +Anterior -Distributive
 :R -Syllabic +Consonantal +Sonorant +Continuant +Voice ?Coronal -Anterior -Distributive
 j  -Syllabic -Consonantal +Sonorant +Continuant +Voice ?Dorsal -Back +High -Low 

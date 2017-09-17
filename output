@@ -1,10 +1,99 @@
-['p', 'pH', 'b', 'f', 'v', 'm'] ['+Consonantal', '?Labial']
-['pH', 'tH', 'tSH', 'kH', 'qH'] ['?SG']
-['k', 'q', 'kH', 'qH'] ['-Continuant', '-Voice', '?Dorsal']
-['b', 'd', 'dZ', 'g'] ['-Syllabic', '+Consonantal', '-Sonorant', '-Continuant', '+Voice']
-['s', 'z', 'S', 'Z'] ['-Sonorant', '+Continuant', '?Coronal']
-['m', 'n', 'Ln', ':N', 'N', 'w', 'l', ':R', 'j'] ['-Syllabic', '+Sonorant']
-['Ln', ':R'] ['-Syllabic', '+Consonantal', '+Sonorant', '+Voice']
-['1', 'a'] ['+Back', '-Round']
-['e', 'o', 'E', 'O'] ['-High', '-Low']
-['tH', 'd'] ['-Syllabic', '+Consonantal', '-Sonorant', '-Continuant', '?Coronal', '+Anterior', '-Distributive']
+Group: [p,pH,b,f,v,m]
+	Before Minimization: [-Syllabic,+Consonantal,?Labial]
+	Removed Feature: -Syllabic
+	After Minimization: [+Consonantal,?Labial]
+	Number of combinations 8
+---------------------------------
+Group: [pH,tH,tSH,kH,qH]
+	Before Minimization: [-Syllabic,+Consonantal,-Sonorant,-Continuant,-Voice,?SG]
+	Removed Feature: -Syllabic
+	Removed Feature: +Consonantal
+	Removed Feature: -Sonorant
+	Removed Feature: -Continuant
+	Removed Feature: -Voice
+	After Minimization: [?SG]
+	Number of combinations 64
+---------------------------------
+Group: [k,q,kH,qH]
+	Before Minimization: [-Syllabic,+Consonantal,-Sonorant,-Continuant,-Voice,?Dorsal,+Back]
+	Removed Feature: -Syllabic
+	Removed Feature: +Consonantal
+	Removed Feature: -Sonorant
+	Removed Feature: +Back
+	After Minimization: [-Continuant,-Voice,?Dorsal]
+	Number of combinations 128
+---------------------------------
+Group: [b,d,dZ,g]
+	Before Minimization: [-Syllabic,+Consonantal,-Sonorant,-Continuant,+Voice]
+	Removed Feature: -Syllabic
+	Removed Feature: +Consonantal
+	After Minimization: [-Sonorant,-Continuant,+Voice]
+	Number of combinations 32
+---------------------------------
+Group: [s,z,S,Z]
+	Before Minimization: [-Syllabic,+Consonantal,-Sonorant,+Continuant,?Coronal,+Strident]
+	Removed Feature: -Syllabic
+	Removed Feature: +Consonantal
+	Removed Feature: +Strident
+	After Minimization: [-Sonorant,+Continuant,?Coronal]
+	Number of combinations 64
+---------------------------------
+Group: [m,n,Ln,:N,N,w,l,:R,j]
+	Before Minimization: [-Syllabic,+Sonorant,+Voice]
+	Removed Feature: +Voice
+	After Minimization: [-Syllabic,+Sonorant]
+	Number of combinations 8
+---------------------------------
+Group: [Ln,:R]
+	Before Minimization: [-Syllabic,+Consonantal,+Sonorant,+Voice,?Coronal,-Anterior]
+	Removed Feature: -Syllabic
+	Removed Feature: +Consonantal
+	Removed Feature: +Voice
+	Removed Feature: ?Coronal
+	After Minimization: [+Sonorant,-Anterior]
+	Number of combinations 64
+---------------------------------
+Group: [1,a]
+	Before Minimization: [+Back,-ATR,-Round,+Syllabic,-Consonantal,+Sonorant,+Continuant,+Voice]
+	Removed Feature: -ATR
+	Removed Feature: +Syllabic
+	Removed Feature: -Consonantal
+	Removed Feature: +Sonorant
+	Removed Feature: +Continuant
+	Removed Feature: +Voice
+	After Minimization: [+Back,-Round]
+	Number of combinations 256
+---------------------------------
+Group: [e,o,E,O]
+	Before Minimization: [-High,-Low,+Syllabic,-Consonantal,+Sonorant,+Continuant,+Voice]
+	Removed Feature: +Syllabic
+	Removed Feature: -Consonantal
+	Removed Feature: +Sonorant
+	Removed Feature: +Continuant
+	Removed Feature: +Voice
+	After Minimization: [-High,-Low]
+	Number of combinations 128
+---------------------------------
+Group: [tH,d]
+	Before Minimization: []
+	After Minimization: []
+	Number of combinations 1
+---------------------------------
+Counts for each removed feature:
++Syllabic: 2
+-ATR: 1
+-Consonantal: 2
++Strident: 1
+?Coronal: 1
++Voice: 4
+-Continuant: 1
++Continuant: 2
+-Syllabic: 6
+-Voice: 1
++Sonorant: 2
++Consonantal: 5
+-Sonorant: 2
++Back: 1
+
+---------------------------------
+Average number of considered combinations: 75
