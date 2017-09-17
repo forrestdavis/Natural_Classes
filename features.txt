@@ -6,52 +6,52 @@
 #Format is phoneme (-/+/?)Feature ... where ? represents unary feature
 
 #Vowels
-i -Back +High -Low +ATR -Round
-I -Back +High -Low -ATR -Round
-e -Back -High -Low +ATR -Round
-E -Back -High -Low -ATR -Round
-ae -Back -High +Low -ATR -Round
-u +Back +High -Low +ATR +Round
-U +Back +High -Low -ATR +Round
-o +Back -High -Low +ATR +Round
-O +Back -High -Low -ATR +Round
-a +Back -High +Low -ATR -Round
-y -Back +High -Low +ATR +Round
-o| -Back -High -Low +ATR +Round
-1 +Back +High -Low -ATR -Round
-2 +Back -High -Low -ATR -Round
+i -Back +High -Low +ATR -Round +Syllabic -Consonantal +Sonorant +Continuant +Voice
+I -Back +High -Low -ATR -Round +Syllabic -Consonantal +Sonorant +Continuant +Voice
+e -Back -High -Low +ATR -Round +Syllabic -Consonantal +Sonorant +Continuant +Voice
+E -Back -High -Low -ATR -Round +Syllabic -Consonantal +Sonorant +Continuant +Voice
+ae -Back -High +Low -ATR -Round +Syllabic -Consonantal +Sonorant +Continuant +Voice
+u +Back +High -Low +ATR +Round +Syllabic -Consonantal +Sonorant +Continuant +Voice
+U +Back +High -Low -ATR +Round +Syllabic -Consonantal +Sonorant +Continuant +Voice
+o +Back -High -Low +ATR +Round +Syllabic -Consonantal +Sonorant +Continuant +Voice
+O +Back -High -Low -ATR +Round +Syllabic -Consonantal +Sonorant +Continuant +Voice
+a +Back -High +Low -ATR -Round +Syllabic -Consonantal +Sonorant +Continuant +Voice
+y -Back +High -Low +ATR +Round +Syllabic -Consonantal +Sonorant +Continuant +Voice
+o| -Back -High -Low +ATR +Round +Syllabic -Consonantal +Sonorant +Continuant +Voice
+1 +Back +High -Low -ATR -Round +Syllabic -Consonantal +Sonorant +Continuant +Voice
+2 +Back -High -Low -ATR -Round +Syllabic -Consonantal +Sonorant +Continuant +Voice
 
 #Consonants
 p -Syllabic +Consonantal -Sonorant -Continuant -Voice ?Labial
 pH -Syllabic +Consonantal -Sonorant -Continuant -Voice ?SG ?Labial
 b -Syllabic +Consonantal -Sonorant -Continuant +Voice ?Labial
 bH -Syllabic +Consonantal -Sonorant -Continuant +Voice ?SG ?Labial
-t -Syllabic +Consonantal -Sonorant -Continuant -Voice ?Coronal +Anterior 
-tH
-tS
-tSH
-k
-kH
-g
-q
-qH
-d
-dZ
-f
-v
-s
-z
-S
-Z
-x
-G
-X
-m
-n
-Ln
-N
-:N
-w
-l
-:R
-j
+t -Syllabic +Consonantal -Sonorant -Continuant -Voice ?Coronal +Anterior -Distributive
+tH -Syllabic +Consonantal -Sonorant -Continuant -Voice ?SG ?Coronal +Anterior -Distributive
+tS -Syllabic +Consonantal -Sonorant -Continuant ?DR -Voice ?Coronal -Anterior +Distributive +Strident
+tSH -Syllabic +Consonantal -Sonorant -Continuant ?DR -Voice ?SG ?Coronal -Anterior +Distributive +Strident
+k -Syllabic +Consonantal -Sonorant -Continuant -Voice ?Dorsal +Back +High -Low
+kH -Syllabic +Consonantal -Sonorant -Continuant -Voice ?SG ?Dorsal +Back +High -Low
+g -Syllabic +Consonantal -Sonorant -Continuant +Voice ?Dorsal +Back +High -Low
+q -Syllabic +Consonantal -Sonorant -Continuant -Voice ?Dorsal +Back -High +Low
+qH -Syllabic +Consonantal -Sonorant -Continuant -Voice ?SG ?Dorsal +Back -High +Low
+d -Syllabic +Consonantal -Sonorant -Continuant +Voice ?Coronal +Anterior -Distributive
+dZ -Syllabic +Consonantal -Sonorant -Continuant ?DR +Voice ?Coronal -Anterior +Distributive +Strident
+f -Syllabic +Consonantal -Sonorant +Continuant -Voice ?Labial +Strident
+v -Syllabic +Consonantal -Sonorant +Continuant +Voice ?Labial +Strident
+s -Syllabic +Consonantal -Sonorant +Continuant -Voice ?Coronal +Anterior -Distributive +Strident
+z -Syllabic +Consonantal -Sonorant +Continuant +Voice ?Coronal +Anterior -Distributive +Strident
+S -Syllabic +Consonantal -Sonorant +Continuant -Voice ?Coronal -Anterior +Distributive +Strident
+Z -Syllabic +Consonantal -Sonorant +Continuant +Voice ?Coronal -Anterior +Distributive +Strident
+x -Syllabic +Consonantal -Sonorant +Continuant -Voice ?Dorsal +Back +High -Low -Strident
+G -Syllabic +Consonantal -Sonorant +Continuant +Voice ?Dorsal +Back +High -Low
+X -Syllabic +Consonantal -Sonorant +Continuant -Voice ?Dorsal +Back -High +Low +Strident
+m -Syllabic +Consonantal +Sonorant -Continuant ?Nasal +Voice ?Labial
+n -Syllabic +Consonantal +Sonorant -Continuant ?Nasal +Voice ?Coronal +Anterior -Distributive
+Ln -Syllabic +Consonantal +Sonorant -Continuant ?Nasal +Voice ?Coronal -Anterior ?Dorsal -Back +High -Low
+N -Syllabic +Consonantal +Sonorant -Continuant ?Nasal +Voice ?Dorsal +Back -High +Low
+:N -Syllabic +Consonantal +Sonorant -Continuant ?Nasal +Voice ?Dorsal  +Back +High -Low
+w -Syllabic -Consonantal +Sonorant +Continuant +Voice ?Labial +Back +High -Low
+l -Syllabic +Consonantal +Sonorant +Continuant ?Lateral +Voice ?Coronal +Anterior -Distributive
+:R -Syllabic +Consonantal +Sonorant +Continuant +Voice ?Coronal -Anterior -Distributive
+j  -Syllabic -Consonantal +Sonorant +Continuant +Voice ?Dorsal -Back +High -Low 

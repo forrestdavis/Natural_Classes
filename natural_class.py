@@ -1,5 +1,7 @@
 from itertools import combinations
 
+#Creates a dictionary of key: value, sound: features
+#from a feature file
 def load_features(filename):
     data = open(filename, "r")
 
@@ -14,6 +16,8 @@ def load_features(filename):
     data.close()
     return feats
 
+#Loads inventory from a file containing all the sounds
+#returns a list
 def load_inventory(filename):
     data = open(filename, "r")
 
@@ -28,9 +32,8 @@ def load_inventory(filename):
     data.close()
     return inv
 
-#TODO: This will take as input a collection of sounds and then 
+#This will take as input a collection of sounds and then 
 #returns the list of distinctive features if true, else []
-#TODO: FIX ERROR. NOT  PRODUCING MINIMUM SET OF FEATURES
 def is_natural_class(features, inventory, group):
     inv = load_inventory(inventory)
     feats = load_features(features)
@@ -51,13 +54,28 @@ def is_natural_class(features, inventory, group):
                     tmp.append(distinct_feats[y])
             distinct_feats = tmp
 
+    #Checks to see that the set of shared features only generates
+    #the group
+    generated = generate_sounds(feats, inv, distinct_feats) 
+    notSet = 0
+    for s in generated:
+        if s not in group:
+            notSet = 1
+    if notSet:
+        distinct_feats = []
+
+    #If valid set, then minimize feature space
     if distinct_feats:
         distinct_feats = check_minumum(feats, inv, group, distinct_feats)
 
     return distinct_feats
 
+#Function that takes a set of a group of sounds and their distinct
+#features and produces all combinations of the sounds to return the 
+#minimum set of features to produce only those sounds.
 def check_minumum(feats, inv, group, distinct_feats):
 
+    #Generates all combinations of features (2^N)
     possible_feats = (sum([map(list, combinations(distinct_feats, i)) 
         for i in range(len(distinct_feats)+1)], []))
 
@@ -65,21 +83,22 @@ def check_minumum(feats, inv, group, distinct_feats):
     for possible in possible_feats:
         sounds = generate_sounds(feats, inv, possible)
         correctSet = 1
-        #print possible
         for sound in sounds:
-            #print sound
             if sound not in group:
                 #print "Not in set"
                 correctSet = 0
         if correctSet:
-            #print "Generates correct set", possible
             if len(possible) < len(minimum_set):
                 minimum_set = possible
 
     return minimum_set
 
+#Function that generates sounds from a set  of features and
+#a langauage inventory
 def generate_sounds(features, inventory, distinct_feats):
 
+    #This is to allow both the passing of a feature/inventory
+    #file or an already created feats/inv set
     if type(features) == str:
         feats = load_features(features)
     if type(inventory) == str:
@@ -111,11 +130,39 @@ if __name__ == "__main__":
 
     features = "features.txt"
     inventory = "inventory.txt"
+
+    group = ['p', 'pH', 'b', 'f', 'v', 'm']
+    print group, is_natural_class(features, inventory, group)
+
+    group = ['pH', 'tH', 'tSH', 'kH', 'qH']
+    print group, is_natural_class(features, inventory, group)
+
+    group = ['k', 'q', 'kH', 'qH']
+    print group, is_natural_class(features, inventory, group)
+
+    group = ['b', 'd', 'dZ', 'g']
+    print group, is_natural_class(features, inventory, group)
+
+    group = ['s', 'z', 'S', 'Z']
+    print group, is_natural_class(features, inventory, group)
+
+    group = ['m', 'n', 'Ln', ':N', 'N', 'w', 'l', ':R', 'j']
+    print group, is_natural_class(features, inventory, group)
+
+    group = ['Ln', ':R']
+    print group, is_natural_class(features, inventory, group)
+
+    group = ['1', 'a']
+    print group, is_natural_class(features, inventory, group)
+
     group = ['e', 'o', 'E', 'O']
-    #group = ['1', 'a']
-    print is_natural_class(features, inventory, group)
+    print group, is_natural_class(features, inventory, group)
+
+    group = ['tH', 'd']
+    print group, is_natural_class(features, inventory, group)
 
     '''
-    distinct_feats = ['+Back', '-ATR']
+    #distinct_feats = ['-Syllabic', '+Consonantal', '-Sonorant', '-Continuant', '?Coronal', '+Anterior', '-Distributive']
+    distinct_feats = ['+Sonorant', '-Anterior']
     print generate_sounds(features, inventory, distinct_feats)
     '''

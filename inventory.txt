@@ -4,6 +4,7 @@
 #
 #Format is one phoneme per line
 
+#Vowels
 i 
 1
 u
@@ -12,3 +13,37 @@ o
 E
 O
 a
+
+#Consonants
+p
+t
+tS
+k
+q
+pH
+tH
+tSH
+kH
+qH
+b
+d
+dZ
+g
+f
+s
+S
+x
+X
+v
+z
+Z
+G
+m
+n
+Ln
+:N
+N
+w
+l
+:R
+j
