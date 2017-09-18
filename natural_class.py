@@ -175,14 +175,63 @@ def diagnostics(features, inventory, groups, output_file):
 
     output.close()
 
+#Function that takes as input a file of words
+#and returns a dictionary key: value
+#sound: [[pre1, post1], [pre2, post2]]
+#TODO: do something about features, goal is to return
+#a dictionary of sound with distinctive feature set context
+def generate_contexts(features, words_file):
+
+    words = open(words_file, "r")
+
+    contexts = {}
+    for word in words:
+        word.strip()
+        if word:
+            if word[0] == "#":
+                continue
+            word = word.split()
+            print word
+            for x in range(len(word)):
+                context = []
+                if x == 0:
+                    context.append("#")
+                if len(context) == 0:
+                    context.append(word[x-1])
+                if x == len(word) - 1:
+                    context.append("#")
+                else:
+                    context.append(word[x+1])
+
+                if word[x] not in contexts:
+                    contexts[word[x]] = [context]
+                else:
+                    if context not in contexts[word[x]]:
+                        contexts[word[x]].append(context)
+
+    print contexts['t']
+    print contexts['tH']
+    words.close()
+    return 0
+
 if __name__ == "__main__":
 
     features = "features.txt"
     inventory = "inventory.txt"
     output = "output"
+    words = "words.txt"
 
-    group = ['p']
+    generate_contexts(features, words)
+
+    '''
+    group = ['p', 'pH']
     print group, is_natural_class(features, inventory, group)
+
+    distinct_feats = is_natural_class(features, inventory, group)
+
+    print generate_sounds(features, inventory, distinct_feats)
+    distinct_feats.append('?SG')
+    print generate_sounds(features, inventory, distinct_feats)
 
 
     groups = [['p', 'pH', 'b', 'f', 'v', 'm'],
@@ -196,3 +245,4 @@ if __name__ == "__main__":
             ['e', 'o', 'E', 'O'],
             ['tH', 'd']]
     diagnostics(features, inventory, groups, output)
+    '''
