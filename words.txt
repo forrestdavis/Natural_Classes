@@ -1,12 +1,27 @@
 #Words broken up by phoneme 
-s t o p
-s t a a l
-s t o c k
-s t o k a
-s t r o k a 
-s t a a p
-tH a a l
-tH o p 
-tH o c k 
-tH o k a
-tH a a 
+#Dash is any sound before (as in affix broad affix)
+
+N a b a
+N w a s o
+N a i
+N a l c a m
+N a r i
+s i N
+Ln e b e
+Ln e w a
+Ln i c c a m
+Ln i r c a m 
+Ln e p s a m a 
+- Ln i
+Ln j a l d w a N
+a s j a N o
+m a N
+l u N
+- N u
+- N o
+t i N o j a
+c i N c a m
+t j u N b a p
+s a N r a 
+
+s a n r a

@@ -28,6 +28,7 @@ b -Syllabic +Consonantal -Sonorant -Continuant +Voice ?Labial
 bH -Syllabic +Consonantal -Sonorant -Continuant +Voice ?SG ?Labial
 t -Syllabic +Consonantal -Sonorant -Continuant -Voice ?Coronal +Anterior -Distributive
 tH -Syllabic +Consonantal -Sonorant -Continuant -Voice ?SG ?Coronal +Anterior -Distributive
+c -Syllabic +Consonantal -Sonorant -Continuant -Voice ?Coronal -Anterior ?Dorsal -Back +High -Low
 tS -Syllabic +Consonantal -Sonorant -Continuant ?DR -Voice ?Coronal -Anterior +Distributive +Strident
 tSH -Syllabic +Consonantal -Sonorant -Continuant ?DR -Voice ?SG ?Coronal -Anterior +Distributive +Strident
 k -Syllabic +Consonantal -Sonorant -Continuant -Voice ?Dorsal +Back +High -Low

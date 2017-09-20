@@ -177,9 +177,7 @@ def diagnostics(features, inventory, groups, output_file):
 
 #Function that takes as input a file of words
 #and returns a dictionary key: value
-#sound: [[pre1, post1], [pre2, post2]]
-#TODO: do something about features, goal is to return
-#a dictionary of sound with distinctive feature set context
+#sound: [[to_left, to_right], [to_left, to_right]]
 def generate_contexts(features, words_file):
 
     words = open(words_file, "r")
@@ -191,7 +189,6 @@ def generate_contexts(features, words_file):
             if word[0] == "#":
                 continue
             word = word.split()
-            print word
             for x in range(len(word)):
                 context = []
                 if x == 0:
@@ -209,19 +206,120 @@ def generate_contexts(features, words_file):
                     if context not in contexts[word[x]]:
                         contexts[word[x]].append(context)
 
-    print contexts['t']
-    print contexts['tH']
     words.close()
+    return contexts
+
+#NOTE: For one sided context:
+#
+#Natural class of just context within the inventory yields
+#the correct environment for the rule
+#Further the intersection of the environment
+#and the distinct features for environment+sound is the change
+def generate_rules(features, inventory, word_file, group):
+    
+    contexts = generate_contexts(features, word_file)
+    print contexts['Ln']
+    print contexts['N']
+
+    side = determine_env_dir(contexts, group)
+    print side
+
     return 0
+
+#Function that takes as input a set of contexts and a group
+#of sounds you want to look at 
+#Returns 'c' if contrastive sounds, 'b' if both left and right 
+#are different for the sounds, 'l' if just left, 'r' if just right
+#
+#TODO: error with values return
+def determine_env_dir(contexts, group):
+    
+    seen_pairs = []
+    values = []
+    for sound in group:
+        #Create array of [[sounds to left], [sounds to right]]
+        #populate with first element of context list
+        l = contexts[sound][0][0]
+        r = contexts[sound][0][1]
+        l_r_context = [[l], [r]]
+        #If more than one context continue population l_r_context
+        if len(contexts[sound]) > 1:
+            for y in range(1, len(contexts[sound])):
+                l = contexts[sound][y][0]
+                r = contexts[sound][y][1]
+                #If sound not in current array add
+                if l not in l_r_context[0]:
+                    l_r_context[0].append(l)
+                if r not in l_r_context[1]:
+                    l_r_context[1].append(r)
+
+        #Now compare to rest of sounds skipping over the sound 
+        #already seen
+        for sound2 in group:
+            #Skip over x x pairs
+            if sound2 == sound:
+                continue
+            #This allows us to see a pair of sounds only once instead
+            #of once for x y and another for y x
+            seen_pair = [sound, sound2]
+            seen2_pair = [sound2, sound]
+            if seen_pair in seen_pairs:
+                continue
+            if seen2_pair in seen_pairs:
+                continue
+            else:
+                #Else add pair to seen
+                seen_pairs.append(seen_pair)
+                not_l = 0
+                not_r = 0
+                #if any environment then cant be left
+                if '-' in l_r_context[0]:
+                    not_l = 1
+
+                #look at contexts for 2nd sound
+                for context in contexts[sound2]:
+                    l = context[0]
+                    r = context[1]
+                    #If left context in first sound env, can't be left
+                    if l in l_r_context[0]:
+                        not_l = 1
+                    #If right context in first sound env, can't be right
+                    if r in l_r_context[1]:
+                        not_r = 1
+                    #If any environment then cant be right
+                    if r == '-':
+                        not_r = 1
+
+                #If neither l nor r is contrastive, then must be 
+                #seperate phonemes
+                if not_l and not_r:
+                    seen_pair.append('c')
+                #If both work then need to handle this seperately
+                if not not_l and not not_r:
+                    seen_pair.append('b')
+                #If just right then must be r
+                if not not_r:
+                    seen_pair.append('r')
+                #If just left then must be l
+                else:
+                    seen_pair.append('l')
+                values.append(seen_pair)
+    return values
 
 if __name__ == "__main__":
 
     features = "features.txt"
-    inventory = "inventory.txt"
-    output = "output"
+    #inventory = "inventory.txt"
+    inventory = "homework3_inv.txt"
+    output = "h3"
     words = "words.txt"
 
-    generate_contexts(features, words)
+    group = ['e', 'i', 'j', 'Ln']
+
+    print group, is_natural_class(features, inventory, group)
+
+    group = ['Ln', 'N', 'n']
+    generate_rules(features, inventory, words, group)
 
     '''
     group = ['p', 'pH']
