@@ -498,11 +498,11 @@ def determine_env_dir(contexts, group):
 
 if __name__ == "__main__":
 
-    features = "features.txt"
-    #inventory = "inventory.txt"
-    inventory = "chapter10_inv.txt"
+    features = "features"
+    #inventory = "inventory"
+    inventory = "chapter10_inv"
     output = "h3"
-    words = "words.txt"
+    words = "words"
 
     group = ['r', 'R', 'r*r', ':R']
     generate_rules(features, inventory, words, group)
