@@ -5,5 +5,5 @@ look at, and a set of words that exhibit the environments of the sound.
 
 
 Currently works on given test set, need to check other types of SPE rules.
-In future developement, this would ideal determine possible allophones and
+In future developement, this would ideally determine possible allophones and
 contrastive sounds without the need for user inputed parameters.
