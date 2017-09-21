@@ -5,12 +5,12 @@ N a b a
 N w a s o
 N a i
 N a l c a m
-N a r i
+N a l i
 s i N
 Ln e b e
 Ln e w a
 Ln i c c a m
-Ln i r c a m 
+Ln i l c a m 
 Ln e p s a m a 
 - Ln i
 Ln j a l d w a N
@@ -22,6 +22,4 @@ l u N
 t i N o j a
 c i N c a m
 t j u N b a p
-s a N r a 
-
-#s a n r a
+s a N l a 
