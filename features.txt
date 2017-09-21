@@ -36,6 +36,8 @@ kH -Syllabic +Consonantal -Sonorant -Continuant -Voice ?SG ?Dorsal +Back +High -
 g -Syllabic +Consonantal -Sonorant -Continuant +Voice ?Dorsal +Back +High -Low
 q -Syllabic +Consonantal -Sonorant -Continuant -Voice ?Dorsal +Back -High +Low
 qH -Syllabic +Consonantal -Sonorant -Continuant -Voice ?SG ?Dorsal +Back -High +Low
+:G -Syllabic +Consonantal -Sonorant -Continuant +Voice ?Dorsal +Back -High +Low
+P -Syllabic +Consonantal -Sonorant -Continuant -Voice ?Laryngeal
 d -Syllabic +Consonantal -Sonorant -Continuant +Voice ?Coronal +Anterior -Distributive
 dZ -Syllabic +Consonantal -Sonorant -Continuant ?DR +Voice ?Coronal -Anterior +Distributive +Strident
 f -Syllabic +Consonantal -Sonorant +Continuant -Voice ?Labial +Strident
@@ -47,6 +49,7 @@ Z -Syllabic +Consonantal -Sonorant +Continuant +Voice ?Coronal -Anterior +Distri
 x -Syllabic +Consonantal -Sonorant +Continuant -Voice ?Dorsal +Back +High -Low -Strident
 G -Syllabic +Consonantal -Sonorant +Continuant +Voice ?Dorsal +Back +High -Low
 X -Syllabic +Consonantal -Sonorant +Continuant -Voice ?Dorsal +Back -High +Low +Strident
+h -Syllabic +Consonantal -Sonorant +Continuant -Voice ?Laryngeal
 m -Syllabic +Consonantal +Sonorant -Continuant ?Nasal +Voice ?Labial
 n -Syllabic +Consonantal +Sonorant -Continuant ?Nasal +Voice ?Coronal +Anterior -Distributive
 Ln -Syllabic +Consonantal +Sonorant -Continuant ?Nasal +Voice ?Coronal -Anterior ?Dorsal -Back +High -Low
@@ -56,3 +59,6 @@ w -Syllabic -Consonantal +Sonorant +Continuant +Voice ?Labial +Back +High -Low +
 l -Syllabic +Consonantal +Sonorant +Continuant ?Lateral +Voice ?Coronal +Anterior -Distributive
 :R -Syllabic +Consonantal +Sonorant +Continuant +Voice ?Coronal -Anterior -Distributive
 j  -Syllabic -Consonantal +Sonorant +Continuant +Voice ?Dorsal -Back +High -Low 
+r -Syllabic +Consonantal +Sonoroant +Continuant +Voice ?Coronal +Anterior -Distributive 
+r*r -Syllabic +Consonantal +Sonoroant +Continuant -Voice ?Coronal +Anterior -Distributive 
+R -Syllabic -Consonantal +Sonoroant +Continuant +Voice ?Coronal +Anterior -Distributive 

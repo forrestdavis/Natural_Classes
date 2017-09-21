@@ -226,6 +226,7 @@ def generate_rules(features, inventory, word_file, group):
 
     if allophones:
         UF = posit_underlying_form(features, contexts, allophones)
+        print UF
         rules = []
         for pair in allophones:
             if UF in pair:
@@ -498,12 +499,12 @@ def determine_env_dir(contexts, group):
 if __name__ == "__main__":
 
     features = "features.txt"
-    inventory = "inventory.txt"
-    inventory = "homework3_inv.txt"
+    #inventory = "inventory.txt"
+    inventory = "chapter10_inv.txt"
     output = "h3"
     words = "words.txt"
 
-    group = ['Ln', 'N']
+    group = ['r', 'R', 'r*r', ':R']
     generate_rules(features, inventory, words, group)
 
     '''

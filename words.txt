@@ -1,25 +1,40 @@
 #Words broken up by phoneme 
 #Dash is any sound before (as in affix broad affix)
 
-N a b a
-N w a s o
-N a i
-N a l c a m
-N a l i
-s i N
-Ln e b e
-Ln e w a
-Ln i c c a m
-Ln i l c a m 
-Ln e p s a m a 
-- Ln i
-Ln j a l d w a N
-a s j a N o
-m a N
-l u N
-- N u
-- N o
-t i N o j a
-c i N c a m
-t j u N b a p
-s a N l a 
+r ae d
+r ae h b ae r*r
+r u m i z i
+r ae i s
+r u b a h
+r i z
+r u z n a m e
+r a h z d e n
+p ae r*r
+d i r*r
+p ae n i r*r
+a X ae r*r
+m ae dZ b u r*r
+ae N u r*r
+m a r*r
+m ae s i r*r
+d i d a r*r
+p i R u z
+a R a m
+b i R u n
+s ae R i P
+k ae R i m
+h ae R a s
+k ae R e
+t i R e
+t o R a b
+s u R a X
+G ae :R tS
+s o :R b
+s ae R v
+z ae :R f
+m ae :R d
+g e :R d
+k e :R m
+tS ae :Rm
+ae :R z
+l a :R v
