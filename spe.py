@@ -222,8 +222,12 @@ def generate_rules(features, inventory, word_file, group):
     contexts = generate_contexts(features, word_file)
 
     side = determine_env_dir(contexts, group)
+
+    print side
     
     allophones, phonemes = prune_phonemes(side)
+
+    print allophones, phonemes
 
     rules = []
     UF = ''
