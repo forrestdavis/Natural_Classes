@@ -218,24 +218,50 @@ def generate_contexts(features, words_file):
 def generate_rules(features, inventory, word_file, group):
     
     contexts = generate_contexts(features, word_file)
-    print contexts['Ln']
-    print contexts['N']
 
     side = determine_env_dir(contexts, group)
-    print side
+    
+    allophones, phonemes = prune_phonemes(side)
+
+    if not allophones:
+        return [], phonemes
+
+    print allophones
+
+    UF = posit_underlying_form(contexts, allophones)
 
     return 0
 
+
+def prune_phonemes(side):
+
+    allophones = []
+    phonemes = []
+    for pair in side:
+        if pair[2] != 'c':
+            allophones.append(pair)
+        else:
+            phonemes.append(pair)
+
+    return allophones, phonemes
+
+def posit_underlying_form(contexts, allophones):
+
+    return 0
+
+
 #Function that takes as input a set of contexts and a group
 #of sounds you want to look at 
-#Returns 'c' if contrastive sounds, 'b' if both left and right 
-#are different for the sounds, 'l' if just left, 'r' if just right
-#
-#TODO: error with values return
+#Returns a list of [[sound1, sound2, env], ...], where env
+#is one of four values: 'c' if contrastive sounds (seperate phonemes)
+#'b' if both left and right environments are different, 'l' if
+#just the the left enivronment is different, and 'r' if just
+#the right is different
 def determine_env_dir(contexts, group):
     
     seen_pairs = []
     values = []
+
     for sound in group:
         #Create array of [[sounds to left], [sounds to right]]
         #populate with first element of context list
@@ -265,7 +291,7 @@ def determine_env_dir(contexts, group):
             seen2_pair = [sound2, sound]
             if seen_pair in seen_pairs:
                 continue
-            if seen2_pair in seen_pairs:
+            elif seen2_pair in seen_pairs:
                 continue
             else:
                 #Else add pair to seen
@@ -292,18 +318,19 @@ def determine_env_dir(contexts, group):
 
                 #If neither l nor r is contrastive, then must be 
                 #seperate phonemes
+                value = [sound, sound2]
                 if not_l and not_r:
-                    seen_pair.append('c')
+                    value.append('c')
                 #If both work then need to handle this seperately
-                if not not_l and not not_r:
-                    seen_pair.append('b')
+                elif not not_l and not not_r:
+                    value.append('b')
                 #If just right then must be r
-                if not not_r:
-                    seen_pair.append('r')
+                elif not not_r:
+                    value.append('r')
                 #If just left then must be l
                 else:
-                    seen_pair.append('l')
-                values.append(seen_pair)
+                    value.append('l')
+                values.append(value)
     return values
 
 if __name__ == "__main__":
@@ -316,10 +343,10 @@ if __name__ == "__main__":
 
     group = ['e', 'i', 'j', 'Ln']
 
-    print group, is_natural_class(features, inventory, group)
+    #print group, is_natural_class(features, inventory, group)
 
-    group = ['Ln', 'N', 'n']
-    generate_rules(features, inventory, words, group)
+    group = ['Ln', 'N'] #,'n']
+    print generate_rules(features, inventory, words, group)
 
     '''
     group = ['p', 'pH']
