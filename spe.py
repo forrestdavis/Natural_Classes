@@ -1,5 +1,6 @@
 from itertools import combinations
 from sets import Set
+import sys
 
 #Creates a dictionary of key: value, sound: features
 #from a feature file
@@ -224,10 +225,10 @@ def generate_rules(features, inventory, word_file, group):
     
     allophones, phonemes = prune_phonemes(side)
 
+    rules = []
+    UF = ''
     if allophones:
         UF = posit_underlying_form(features, contexts, allophones)
-        print UF
-        rules = []
         for pair in allophones:
             if UF in pair:
                 rule = make_rule(features, inventory, contexts, pair, UF)
@@ -239,7 +240,6 @@ def generate_rules(features, inventory, word_file, group):
     write_rules(phonemes, allophones, rules, group, UF)
 
     return 1
-
 
 def write_rules(phonemes, allophones, rules, group, UF):
 
@@ -499,17 +499,20 @@ def determine_env_dir(contexts, group):
 if __name__ == "__main__":
 
     features = "features"
-    #inventory = "inventory"
-    inventory = "chapter10_inv"
-    output = "h3"
     words = "words"
-
+    inventory = "chapter10_inv"
     group = ['r', 'R', 'r*r', ':R']
+    if len(sys.argv) == 2:
+        inventory = "homework3_inv"
+        words = "homework3_words"
+        group = ['Ln', 'N']
+
     generate_rules(features, inventory, words, group)
 
+    #group = ['tS', 'b', 'v', 'f', 'd', 'm', 'z']
+    #print group, is_natural_class(features, inventory, group)
+
     '''
-    group = ['p', 'pH']
-    print group, is_natural_class(features, inventory, group)
 
     distinct_feats = is_natural_class(features, inventory, group)
 
