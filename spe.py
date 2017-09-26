@@ -179,8 +179,8 @@ def diagnostics(features, inventory, groups, output_file):
 
 #Function that takes as input a file of words
 #and returns a dictionary key: value
-#sound: [[to_left, to_right], [to_left, to_right]]
-def generate_contexts(features, words_file):
+#sound: ['l': [s1 ...] 'r' [s2 ...]]
+def generate_contexts(words_file):
 
     words = open(words_file, "r")
 
@@ -188,27 +188,34 @@ def generate_contexts(features, words_file):
     for word in words:
         word.strip()
         if word:
+            #ignore comments
             if word[0] == "#":
                 continue
             word = word.split()
             for x in range(len(word)):
-                context = []
+                l = []
+                r = []
                 if x == 0:
-                    context.append("#")
-                if len(context) == 0:
-                    context.append(word[x-1])
+                    l.append('#')
+                if len(l) == 0:
+                    l.append(word[x-1])
                 if x == len(word) - 1:
-                    context.append("#")
+                    r.append('#')
                 else:
-                    context.append(word[x+1])
+                    r.append(word[x+1])
 
                 if word[x] not in contexts:
-                    contexts[word[x]] = [context]
+                    contexts[word[x]] = {}
+                    contexts[word[x]]['l'] = l
+                    contexts[word[x]]['r'] = r
                 else:
-                    if context not in contexts[word[x]]:
-                        contexts[word[x]].append(context)
+                    if l not in contexts[word[x]]['l']:
+                        contexts[word[x]]['l'].append(l)
+                    if r not in contexts[word[x]]['r']:
+                        contexts[word[x]]['r'].append(r)
 
     words.close()
+    print contexts
     return contexts
 
 #NOTE: For one sided context:
@@ -219,7 +226,11 @@ def generate_contexts(features, words_file):
 #and the distinct features for environment+sound is the change
 def generate_rules(features, inventory, word_file, group):
     
-    contexts = generate_contexts(features, word_file)
+    contexts = generate_contexts(word_file)
+
+    #feature_env(features, contexts, group)
+
+    '''
 
     side = determine_env_dir(contexts, group)
 
@@ -238,12 +249,20 @@ def generate_rules(features, inventory, word_file, group):
                 rule = make_rule(features, inventory, contexts, pair, UF)
                 if rule == 0:
                     print "FATAL ERROR GENERATING RULE FOR ALLOPHONES", pair
-                    return 0
+                    return 1
                 rules.append(rule)
 
     write_rules(phonemes, allophones, rules, group, UF)
+    '''
 
-    return 1
+    return 0
+
+def feature_env(features, contexts, group):
+
+    for sound in group:
+        print sound, contexts[sound]
+
+    return 0
 
 def write_rules(phonemes, allophones, rules, group, UF):
 
@@ -503,7 +522,7 @@ def determine_env_dir(contexts, group):
 if __name__ == "__main__":
 
     features = "features"
-    words = "words"
+    words = "words_small"
     inventory = "chapter10_inv"
     group = ['r', 'R', 'r*r', ':R']
     if len(sys.argv) == 2:
