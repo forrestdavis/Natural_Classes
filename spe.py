@@ -39,8 +39,13 @@ def load_inventory(filename):
 #If verbose is True, then will return unmaximized distinct
 #features and maximized
 def is_natural_class(features, inventory, group, verbose=False):
-    inv = load_inventory(inventory)
-    feats = load_features(features)
+
+    feats = features
+    inv = inventory
+    if type(features) == str:
+        feats = load_features(features)
+    if type(inv) == str:
+        inv = load_inventory(inventory)
 
     distinct_feats = []
     for x in range(len(group)):
@@ -228,37 +233,58 @@ def generate_contexts(words_file):
 def generate_rules(features, inventory, word_file, group):
     
     contexts = generate_contexts(word_file)
-
     feats = load_features(features)
+    
+    allophones, phonemes = prune_phonemes(group, contexts)
+    
+    #Terminate if there are no allophones
+    if not allophones:
+        print phonemes
+        return 1
 
-    posit_underlying_form(feats, group)
+    uf = posit_underlying_form(feats, allophones)
+    rules = make_rules(feats, contexts, uf, allophones)
 
     '''
-
-    side = determine_env_dir(contexts, group)
-
-    print side
-    
-    allophones, phonemes = prune_phonemes(side)
-
-    print allophones, phonemes
-
-    rules = []
-    UF = ''
-    if allophones:
-        UF = posit_underlying_form(features, contexts, allophones)
-        for pair in allophones:
-            if UF in pair:
-                rule = make_rule(features, inventory, contexts, pair, UF)
-                if rule == 0:
-                    print "FATAL ERROR GENERATING RULE FOR ALLOPHONES", pair
-                    return 1
-                rules.append(rule)
-
     write_rules(phonemes, allophones, rules, group, UF)
     '''
 
     return 0
+
+#TODO: How do we account for intervocalic? There must
+#be some way of checking the environment of allophones
+#so that you distinguish not just the difference between
+#uf and allophone environments, but also the fact 
+#that vowel to the left as a rule would overgenerate
+def make_rules(feats, contexts, uf, allophones):
+
+    inventory = generate_inventory(contexts, allophones) 
+
+    for sound in allophones:
+        print sound, is_natural_class(feats, inventory, contexts[sound]['r'])
+
+    return 0
+
+#Inventory for rule generation is not all possible sounds
+#in the language but rather the sounds in the context
+#of a set of possible allophones. This function
+#returns such an inventory given the set of allophones
+#and the contexts
+def generate_inventory(contexts, allophones):
+
+    inventory = []
+    for allophone in allophones:
+        for sound in contexts[allophone]['l']:
+            if sound == '#':
+                continue
+            if sound not in inventory:
+                inventory.append(sound)
+        for sound in contexts[allophone]['r']:
+            if sound == '#':
+                continue
+            if sound not in inventory:
+                inventory.append(sound)
+    return inventory 
 
 #Function that posits an UF given a set of allophones and 
 #their features. It does this by picking the allophone
@@ -363,6 +389,7 @@ def write_rules(phonemes, allophones, rules, group, UF):
 #and returns a rule for generating the SF from UF.
 #Return value is list [A, B, C] which is reduction of 
 #A --> B / C
+'''    
 def make_rule(features, inventory, contexts, pair, UF):
     
     rule = []
@@ -405,20 +432,54 @@ def make_rule(features, inventory, contexts, pair, UF):
     rule.append(C)
 
     return rule
-    
+'''    
 
 #Function that seperates phonemes from allophones
 #Returns two lists, allophones and phonemes
-#of the form [sound1, sound2, type]
-def prune_phonemes(side):
+#Makes an basic decision that if you have
+#two things that are seperate phonemes and 
+#this environment has an allophone, then only
+#one can be in this allophonic relationship.
+#Picks first element of phonemes to fulfill this
+#role. 
+def prune_phonemes(group, contexts):
 
     allophones = []
     phonemes = []
-    for pair in side:
-        if pair[2] != 'c':
-            allophones.append(pair)
-        else:
-            phonemes.append(pair)
+    for sound in group:
+        sound_l = contexts[sound]['l']
+        sound_r = contexts[sound]['r']
+        for s in group:
+            if s == sound:
+                continue
+            s_l = contexts[s]['l']
+            s_r = contexts[s]['r']
+            same_l = 1
+            same_r = 1
+            for x in sound_l:
+                if x not in s_l:
+                    same_l = 0
+            for x in sound_r:
+                if x not in s_r:
+                    same_r = 0
+            if same_l and same_r:
+                if sound not in phonemes:
+                    phonemes.append(sound)
+                if s not in phonemes:
+                    phonemes.append(s)
+            else:
+                #Only add allophone if two environment has a 
+                #phoneme
+                if(sound not in allophones
+                        and sound not in phonemes):
+                    allophones.append(sound)
+                if(s not in allophones and
+                        s not in phonemes):
+                    allophones.append(s)
+    #Add first element of phonemes to allophones if it is
+    #in an allophonic relationship
+    if allophones and phonemes:
+        allophones.append(phonemes[0])
 
     return allophones, phonemes
 
