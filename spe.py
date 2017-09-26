@@ -193,29 +193,30 @@ def generate_contexts(words_file):
                 continue
             word = word.split()
             for x in range(len(word)):
-                l = []
-                r = []
+                l = ''
+                r = '' 
                 if x == 0:
-                    l.append('#')
-                if len(l) == 0:
-                    l.append(word[x-1])
-                if x == len(word) - 1:
-                    r.append('#')
+                    l = '#'
                 else:
-                    r.append(word[x+1])
+                    l = word[x-1]
+
+                if x == len(word)-1:
+                    r = '#'
+                else:
+                    r = word[x+1]
 
                 if word[x] not in contexts:
                     contexts[word[x]] = {}
-                    contexts[word[x]]['l'] = l
-                    contexts[word[x]]['r'] = r
+                    contexts[word[x]]['l'] = [l]
+                    contexts[word[x]]['r'] = [r]
                 else:
                     if l not in contexts[word[x]]['l']:
                         contexts[word[x]]['l'].append(l)
                     if r not in contexts[word[x]]['r']:
                         contexts[word[x]]['r'].append(r)
 
+
     words.close()
-    print contexts
     return contexts
 
 #NOTE: For one sided context:
@@ -228,7 +229,9 @@ def generate_rules(features, inventory, word_file, group):
     
     contexts = generate_contexts(word_file)
 
-    #feature_env(features, contexts, group)
+    feats = load_features(features)
+
+    feature_env(feats, contexts, group)
 
     '''
 
@@ -257,12 +260,62 @@ def generate_rules(features, inventory, word_file, group):
 
     return 0
 
-def feature_env(features, contexts, group):
+def feature_env(feats, contexts, group):
+
+    general_features(feats, contexts, group)
 
     for sound in group:
         print sound, contexts[sound]
 
     return 0
+
+def general_features(feats, contexts, group):
+
+    envs = {}
+    for allophone in group:
+        for sound in contexts[allophone]:
+            general_types_l = []
+            general_types_r = []
+            for s in contexts[allophone]['l']:
+                tmp = ''
+                if "#" == s:
+                    tmp = '#'
+                else:
+                    f = feats[s]
+                    if "+Syllabic" in f:
+                        tmp = 'V'
+                    else:
+                        tmp = 'C'
+                if not general_types_l:
+                    general_types_l.append(tmp)
+                else:
+                    if tmp not in general_types_l:
+                        general_types_l = ["ERROR"] 
+                        break
+            for s in contexts[allophone]['r']:
+                tmp = ''
+                if "#" == s:
+                    tmp = '#'
+                else:
+                    f = feats[s]
+                    if "+Syllabic" in f:
+                        tmp = 'V'
+                    else:
+                        tmp = 'C'
+                if not general_types_r:
+                    general_types_r.append(tmp)
+                else:
+                    if tmp not in general_types_r:
+                        general_types_r = ["ERROR"] 
+                        break
+        if(general_types_l[0] == 'ERROR' or
+                general_types_r[0] == 'ERROR'):
+            print "UNABLE TO FORM GENERAL TYPES"
+            return 0
+
+        print general_types_l, general_types_r
+
+    return 1
 
 def write_rules(phonemes, allophones, rules, group, UF):
 
@@ -522,7 +575,7 @@ def determine_env_dir(contexts, group):
 if __name__ == "__main__":
 
     features = "features"
-    words = "words_small"
+    words = "words"
     inventory = "chapter10_inv"
     group = ['r', 'R', 'r*r', ':R']
     if len(sys.argv) == 2:
