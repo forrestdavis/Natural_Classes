@@ -231,7 +231,7 @@ def generate_rules(features, inventory, word_file, group):
 
     feats = load_features(features)
 
-    feature_env(feats, contexts, group)
+    posit_underlying_form(feats, group)
 
     '''
 
@@ -260,14 +260,27 @@ def generate_rules(features, inventory, word_file, group):
 
     return 0
 
-def feature_env(feats, contexts, group):
+#Function that posits an UF given a set of allophones and 
+#their features. It does this by picking the allophone
+#that would require the least amount of feature changes
+#to generate the rest of the allophones.
+def posit_underlying_form(feats, allophones):
 
-    general_features(feats, contexts, group)
+    min_feat_diff = 1000000
+    possible_uf = '' 
+    for allophone in allophones:
+        total_feat_diff = 0
+        for sound in allophones:
+            if sound == allophone:
+                continue
+            f1 = Set(feats[allophone])
+            f2 = Set(feats[sound])
+            total_feat_diff += len(f1-f2)
+        if total_feat_diff < min_feat_diff:
+            min_feat_diff = total_feat_diff
+            possible_uf = allophone
 
-    for sound in group:
-        print sound, contexts[sound]
-
-    return 0
+    return possible_uf
 
 def general_features(feats, contexts, group):
 
@@ -444,8 +457,7 @@ is more easily seen with an example:
 
     At the end of looking at all allophone pairs, we should return the 
     phoneme that has the most diverse features in its context.
-'''
-####
+
 def posit_underlying_form(features, contexts, allophones):
 
     feats = load_features(features)
@@ -488,6 +500,7 @@ def posit_underlying_form(features, contexts, allophones):
 
     return uf
 
+'''
 
 #Function that takes as input a set of contexts and a group
 #of sounds you want to look at 
