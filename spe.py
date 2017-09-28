@@ -258,12 +258,133 @@ def generate_rules(features, inventory, word_file, group):
 #that vowel to the left as a rule would overgenerate
 def make_rules(feats, contexts, uf, allophones):
 
-    inventory = generate_inventory(contexts, allophones) 
+    inv = generate_inventory(contexts, allophones) 
 
-    for sound in allophones:
-        print sound, is_natural_class(feats, inventory, contexts[sound]['r'])
+    feat_contexts = general_feat_contexts(feats, inv, contexts, allophones)
+    sides = contrastive_side(feat_contexts, uf, allophones)
+    print sides
 
     return 0
+
+#Function that returns the contexts of the allophones, but rather
+#than a group of sounds, returns the general feature type.
+#The possible general feature types are V, C, #, MISMATCH
+#The return value is {allophone: {'l': FEAT, 'r': FEAT}}
+def general_feat_contexts(feats, inv, contexts, allophones):
+
+    general_feat_con = {} 
+    for sound in allophones:
+        sound_l = contexts[sound]['l']
+        sound_r = contexts[sound]['r']
+
+        general_l = []
+        general_r = []
+
+        for l in sound_l:
+            tmp = '' 
+            if '#' == l:
+                tmp = '#'
+            else:
+                f = feats[l]
+                if "+Syllabic" in f:
+                    tmp = 'V'
+                else:
+                    tmp = 'C'
+            if not general_l:
+                general_l.append(tmp)
+            else:
+                if tmp not in general_l:
+                    general_l = ["MISMATCH"]
+                    break
+
+        for r in sound_r:
+            tmp = '' 
+            if '#' == r:
+                tmp = '#'
+            else:
+                f = feats[r]
+                if "+Syllabic" in f:
+                    tmp = 'V'
+                else:
+                    tmp = 'C'
+            if not general_r:
+                general_r.append(tmp)
+            else:
+                if tmp not in general_r:
+                    general_r = ["MISMATCH"]
+                    break
+
+
+        general_feat_con[sound] = {}
+        general_feat_con[sound]['l'] = general_l
+        general_feat_con[sound]['r'] = general_r
+
+    return general_feat_con
+
+
+
+#Function that calculates which side of allophone is
+#contrastive. Returns {allophone: b/r/l}
+def contrastive_side(feat_contexts, uf, allophones):
+
+    sides = {}
+    uf_l = feat_contexts[uf]['l']
+    uf_r = feat_contexts[uf]['r']
+    for allophone in allophones:
+        if allophone == uf:
+            continue
+        allophone_l = feat_contexts[allophone]['l']
+        allophone_r = feat_contexts[allophone]['r']
+
+        side = ''
+        is_l = 0
+        is_r = 0
+        if allophone_l != uf_l:
+            is_l = 1
+        if allophone_r != uf_r:
+            is_r = 1
+
+        for sound in allophones:
+            if(sound == allophone or
+                    sound == uf):
+                continue
+            if is_l and not is_r:
+                #If left context is same as left context of other
+                #allophone then it must be both right and left
+                if allophone_l == feat_contexts[sound]['l']:
+                    is_r = 1
+                    break
+
+            elif is_r and not is_l:
+                #If right context is the same as right context
+                #of other allophones then it must be both left
+                #and right
+                if allophone_r == feat_contexts[sound]['r']:
+                    is_l = 1
+                    break
+
+            #If both sides are contrastive, then pick one
+            #that is different than other allophones
+            else:
+                if allophone_l == feat_contexts[sound]['l']:
+                    is_l = 0
+                    break
+                if allophone_r == feat_contexts[sound]['r']:
+                    is_r = 0
+                    break
+
+        if is_l and is_r:
+            side = 'b'
+        elif is_l:
+            side = 'l'
+        elif is_r:
+            side = 'r'
+        else:
+            print "ERROR"
+
+        sides[allophone] = side
+
+    return sides
 
 #Inventory for rule generation is not all possible sounds
 #in the language but rather the sounds in the context
@@ -289,7 +410,7 @@ def generate_inventory(contexts, allophones):
 #Function that posits an UF given a set of allophones and 
 #their features. It does this by picking the allophone
 #that would require the least amount of feature changes
-#to generate the rest of the allophones.
+#to generate the rest of the allophones.  
 def posit_underlying_form(feats, allophones):
 
     min_feat_diff = 1000000
@@ -308,53 +429,6 @@ def posit_underlying_form(feats, allophones):
 
     return possible_uf
 
-def general_features(feats, contexts, group):
-
-    envs = {}
-    for allophone in group:
-        for sound in contexts[allophone]:
-            general_types_l = []
-            general_types_r = []
-            for s in contexts[allophone]['l']:
-                tmp = ''
-                if "#" == s:
-                    tmp = '#'
-                else:
-                    f = feats[s]
-                    if "+Syllabic" in f:
-                        tmp = 'V'
-                    else:
-                        tmp = 'C'
-                if not general_types_l:
-                    general_types_l.append(tmp)
-                else:
-                    if tmp not in general_types_l:
-                        general_types_l = ["ERROR"] 
-                        break
-            for s in contexts[allophone]['r']:
-                tmp = ''
-                if "#" == s:
-                    tmp = '#'
-                else:
-                    f = feats[s]
-                    if "+Syllabic" in f:
-                        tmp = 'V'
-                    else:
-                        tmp = 'C'
-                if not general_types_r:
-                    general_types_r.append(tmp)
-                else:
-                    if tmp not in general_types_r:
-                        general_types_r = ["ERROR"] 
-                        break
-        if(general_types_l[0] == 'ERROR' or
-                general_types_r[0] == 'ERROR'):
-            print "UNABLE TO FORM GENERAL TYPES"
-            return 0
-
-        print general_types_l, general_types_r
-
-    return 1
 
 def write_rules(phonemes, allophones, rules, group, UF):
 
@@ -562,89 +636,6 @@ def posit_underlying_form(features, contexts, allophones):
     return uf
 
 '''
-
-#Function that takes as input a set of contexts and a group
-#of sounds you want to look at 
-#Returns a list of [[sound1, sound2, env], ...], where env
-#is one of four values: 'c' if contrastive sounds (seperate phonemes)
-#'b' if both left and right environments are different, 'l' if
-#just the the left enivronment is different, and 'r' if just
-#the right is different
-def determine_env_dir(contexts, group):
-    
-    seen_pairs = []
-    values = []
-
-    for sound in group:
-        #Create array of [[sounds to left], [sounds to right]]
-        #populate with first element of context list
-        l = contexts[sound][0][0]
-        r = contexts[sound][0][1]
-        l_r_context = [[l], [r]]
-        #If more than one context continue population l_r_context
-        if len(contexts[sound]) > 1:
-            for y in range(1, len(contexts[sound])):
-                l = contexts[sound][y][0]
-                r = contexts[sound][y][1]
-                #If sound not in current array add
-                if l not in l_r_context[0]:
-                    l_r_context[0].append(l)
-                if r not in l_r_context[1]:
-                    l_r_context[1].append(r)
-
-        #Now compare to rest of sounds skipping over the sound 
-        #already seen
-        for sound2 in group:
-            #Skip over x x pairs
-            if sound2 == sound:
-                continue
-            #This allows us to see a pair of sounds only once instead
-            #of once for x y and another for y x
-            seen_pair = [sound, sound2]
-            seen2_pair = [sound2, sound]
-            if seen_pair in seen_pairs:
-                continue
-            elif seen2_pair in seen_pairs:
-                continue
-            else:
-                #Else add pair to seen
-                seen_pairs.append(seen_pair)
-                not_l = 0
-                not_r = 0
-                #if any environment then cant be left
-                if '-' in l_r_context[0]:
-                    not_l = 1
-
-                #look at contexts for 2nd sound
-                for context in contexts[sound2]:
-                    l = context[0]
-                    r = context[1]
-                    #If left context in first sound env, can't be left
-                    if l in l_r_context[0]:
-                        not_l = 1
-                    #If right context in first sound env, can't be right
-                    if r in l_r_context[1]:
-                        not_r = 1
-                    #If any environment then cant be right
-                    if r == '-':
-                        not_r = 1
-
-                #If neither l nor r is contrastive, then must be 
-                #seperate phonemes
-                value = [sound, sound2]
-                if not_l and not_r:
-                    value.append('c')
-                #If both work then need to handle this seperately
-                elif not not_l and not not_r:
-                    value.append('b')
-                #If just right then must be r
-                elif not not_r:
-                    value.append('r')
-                #If just left then must be l
-                else:
-                    value.append('l')
-                values.append(value)
-    return values
 
 if __name__ == "__main__":
 
