@@ -51,7 +51,7 @@ def is_natural_class(features, inventory, group, verbose=False):
     for x in range(len(group)):
         sound = group[x]
         if sound not in inv:
-            print "ERROR with ", sound
+            print "INVENTORY ERROR with ", sound
             break
         if x == 0:
             distinct_feats = feats[sound]
@@ -256,13 +256,43 @@ def generate_rules(features, inventory, word_file, group):
 #so that you distinguish not just the difference between
 #uf and allophone environments, but also the fact 
 #that vowel to the left as a rule would overgenerate
+#A -> B / C
 def make_rules(feats, contexts, uf, allophones):
+
+    rules = {}
 
     inv = generate_inventory(contexts, allophones) 
 
     feat_contexts = general_feat_contexts(feats, inv, contexts, allophones)
     sides = contrastive_side(feat_contexts, uf, allophones)
-    print sides
+    group = [uf] + allophones
+    A = is_natural_class(feats, inv, [uf])
+    for allophone in allophones:
+        rule = [A]
+        if allophone == uf:
+            continue
+        side = sides[allophone]
+        if side == 'b':
+            C = [feat_contexts[allophone]['l'], 
+                    '__', feat_contexts[allophone]['r']]
+        if side == 'r':
+            C = ['__', feat_contexts[allophone]['r']]
+        if side == 'l':
+            C = [feat_contexts[allophone]['l'], '__']
+
+        B = is_natural_class(feats, inv, [allophone])
+        tmp = []
+        for feat in B:
+            #print feats[uf]
+            if feat not in feats[uf]:
+                tmp.append(feat)
+        B = tmp
+        rule.append(B)
+        rule.append(C)
+        rules[allophone] = rule
+
+    for pair in rules:
+        print pair, rules[pair]
 
     return 0
 
@@ -395,6 +425,7 @@ def generate_inventory(contexts, allophones):
 
     inventory = []
     for allophone in allophones:
+        inventory.append(allophone)
         for sound in contexts[allophone]['l']:
             if sound == '#':
                 continue
@@ -463,7 +494,7 @@ def write_rules(phonemes, allophones, rules, group, UF):
 #and returns a rule for generating the SF from UF.
 #Return value is list [A, B, C] which is reduction of 
 #A --> B / C
-'''    
+'''
 def make_rule(features, inventory, contexts, pair, UF):
     
     rule = []

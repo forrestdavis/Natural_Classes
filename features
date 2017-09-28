@@ -59,6 +59,6 @@ w -Syllabic -Consonantal +Sonorant +Continuant +Voice ?Labial +Back +High -Low +
 l -Syllabic +Consonantal +Sonorant +Continuant ?Lateral +Voice ?Coronal +Anterior -Distributive
 :R -Syllabic +Consonantal +Sonorant +Continuant +Voice ?Coronal -Anterior -Distributive
 j  -Syllabic -Consonantal +Sonorant +Continuant +Voice ?Dorsal -Back +High -Low 
-r -Syllabic +Consonantal +Sonoroant +Continuant +Voice ?Coronal +Anterior -Distributive 
-r*r -Syllabic +Consonantal +Sonoroant +Continuant -Voice ?Coronal +Anterior -Distributive 
-R -Syllabic -Consonantal +Sonoroant +Continuant +Voice ?Coronal +Anterior -Distributive 
+r -Syllabic +Consonantal +Sonorant +Continuant +Voice ?Coronal +Anterior -Distributive 
+r*r -Syllabic +Consonantal +Sonorant +Continuant -Voice ?Coronal +Anterior -Distributive 
+R -Syllabic +Consonantal +Sonorant -Continuant +Voice ?Coronal +Anterior -Distributive 
