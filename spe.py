@@ -38,6 +38,8 @@ def load_inventory(filename):
 #returns the list of distinctive features if true, else []
 #If verbose is True, then will return unmaximized distinct
 #features and maximized
+
+#TODO SKIP OVER NON INVENTORY SOUNDS
 def is_natural_class(features, inventory, group, verbose=False):
 
     feats = features
@@ -52,7 +54,7 @@ def is_natural_class(features, inventory, group, verbose=False):
         sound = group[x]
         if sound not in inv:
             print "INVENTORY ERROR with ", sound
-            break
+            continue
         if x == 0:
             distinct_feats = feats[sound]
 
@@ -126,22 +128,10 @@ def generate_sounds(features, inventory, distinct_feats):
         for d_feats in distinct_feats:
             if d_feats not in feats[sound]:
                 notGenerated = 1
-        '''
-        for feat in feats[sound]:
-            if feat not in distinct_feats:
-                notGenerated = 1
-        '''
         if not notGenerated:
             generated.append(sound)
 
     return generated
-
-#TODO: This will take as input a sound inventory for a language
-#returns the possible natural classes and their distinctive features
-#as specified by the feature file
-def generate_natural_class(feats, inventory):
-
-    return 0
 
 #Function that returns information about the minimizations
 #of distinct feature sets from a list of groups of sounds
@@ -245,9 +235,7 @@ def generate_rules(features, inventory, word_file, group):
     uf = posit_underlying_form(feats, allophones)
     rules = make_rules(feats, contexts, uf, allophones)
 
-    '''
-    write_rules(phonemes, allophones, rules, group, UF)
-    '''
+    write_rules(phonemes, allophones, rules, uf)
 
     return 0
 
@@ -265,8 +253,14 @@ def make_rules(feats, contexts, uf, allophones):
 
     feat_contexts = general_feat_contexts(feats, inv, contexts, allophones)
     sides = contrastive_side(feat_contexts, uf, allophones)
+    if not sides:
+        feat_contexts = specific_feat_contexts(feats, 
+                inv, contexts, allophones)
+        sides = contrastive_side(feat_contexts, uf, allophones)
+
     group = [uf] + allophones
     A = is_natural_class(feats, inv, [uf])
+    print A
     for allophone in allophones:
         rule = [A]
         if allophone == uf:
@@ -291,10 +285,22 @@ def make_rules(feats, contexts, uf, allophones):
         rule.append(C)
         rules[allophone] = rule
 
-    for pair in rules:
-        print pair, rules[pair]
+    return rules
 
-    return 0
+def specific_feat_contexts(feats, inv, contexts, allophones):
+
+    specific_feat_con = {}
+    for sound in allophones:
+        sound_l = contexts[sound]['l']
+        sound_r = contexts[sound]['r']
+        feat_l = is_natural_class(feats, inv, sound_l)
+        feat_r = is_natural_class(feats, inv, sound_r)
+
+        specific_feat_con[sound] = {}
+        specific_feat_con[sound]['l'] = feat_l
+        specific_feat_con[sound]['r'] = feat_r
+
+    return specific_feat_con
 
 #Function that returns the contexts of the allophones, but rather
 #than a group of sounds, returns the general feature type.
@@ -314,6 +320,8 @@ def general_feat_contexts(feats, inv, contexts, allophones):
             tmp = '' 
             if '#' == l:
                 tmp = '#'
+            elif '-' == l:
+                tmp = '!'
             else:
                 f = feats[l]
                 if "+Syllabic" in f:
@@ -343,7 +351,6 @@ def general_feat_contexts(feats, inv, contexts, allophones):
                 if tmp not in general_r:
                     general_r = ["MISMATCH"]
                     break
-
 
         general_feat_con[sound] = {}
         general_feat_con[sound]['l'] = general_l
@@ -410,7 +417,7 @@ def contrastive_side(feat_contexts, uf, allophones):
         elif is_r:
             side = 'r'
         else:
-            print "ERROR"
+            return []
 
         sides[allophone] = side
 
@@ -427,7 +434,7 @@ def generate_inventory(contexts, allophones):
     for allophone in allophones:
         inventory.append(allophone)
         for sound in contexts[allophone]['l']:
-            if sound == '#':
+            if sound == '#' or sound == "-":
                 continue
             if sound not in inventory:
                 inventory.append(sound)
@@ -461,83 +468,27 @@ def posit_underlying_form(feats, allophones):
     return possible_uf
 
 
-def write_rules(phonemes, allophones, rules, group, UF):
+def write_rules(phonemes, allophones, rules, uf):
 
-    print "Given the following group of sounds:", group
+    print "Given the following group of sounds:", phonemes+allophones
     print "The following information was determined:\n"
     print "------------------------------------------"
     print "CONTRASTIVE: "
-    for pair in phonemes:
-        print pair[0], pair[1]
+    if phonemes:
+        print phonemes
+    print "------------------------------------------"
     print "------------------------------------------"
 
-    print "ALLOPHONES WITH RULES GIVEN", UF, "AS UNDERLYING FORM"
-    x = 0
-    for pair in allophones:
-        if x == len(rules):
-            break
-        if pair[0] != UF:
-            print pair[0], "becomes", UF
-        else:
-            print pair[1], "becomes", UF
-        print "\t Rule: "
-        rule = rules[x]
-        if pair[2] == "r":
-            print rule[0], "--->", rule[1], "/", " __", rule[2]
-        if pair[2] == "l":
-            print rule[0], "--->", rule[1], "/", rule[2], "__"
-        x += 1
+    print "ALLOPHONES WITH RULES:"
+    print '\t', uf, "AS UNDERLYING FORM"
+    for allophone in allophones:
+        if allophone == uf:
+            continue
+        print allophone+":"
+        rule = rules[allophone]
+        print rule[0], "---->", rule[1], "/", rule[2]
+        print "------------------------------------------"
 
-
-#Function that takes feature file, inventory file, contexts, 
-#allophone triplet as seen from prune_phonemes and the UF
-#and returns a rule for generating the SF from UF.
-#Return value is list [A, B, C] which is reduction of 
-#A --> B / C
-'''
-def make_rule(features, inventory, contexts, pair, UF):
-    
-    rule = []
-    sound = pair[1]
-    if pair[1] == UF:
-        sound = pair[0]
-
-    A = is_natural_class(features, inventory, UF)
-    if not A:
-        print "ERROR WITH GETTING DISTINCT FEATURES OF", UF
-        return 0
-    else:
-        rule.append(A)
-
-    group = []
-    env = 0
-    if pair[2] == "r":
-        env = 1
-    for context in contexts[sound]:
-        group.append(context[env])
-    C = is_natural_class(features, inventory, group)
-    if not C:
-        print "ERROR WITH GETTING DISTINCT FEATURES OF", group
-        return 0
-
-    group.append(sound)
-    B = is_natural_class(features, inventory, group)
-
-    tmp = []
-    for element in B:
-        if element in C:
-            tmp.append(element)
-
-    B = tmp
-    if not B:
-        print "ERROR WITH GETTING CHANGED FEATURE OF", UF, "TO", sound
-        return 0
-
-    rule.append(B)
-    rule.append(C)
-
-    return rule
-'''    
 
 #Function that seperates phonemes from allophones
 #Returns two lists, allophones and phonemes
@@ -581,108 +532,26 @@ def prune_phonemes(group, contexts):
                 if(s not in allophones and
                         s not in phonemes):
                     allophones.append(s)
-    #Add first element of phonemes to allophones if it is
-    #in an allophonic relationship
-    if allophones and phonemes:
-        allophones.append(phonemes[0])
 
     return allophones, phonemes
 
-#Function that takes a file for features, a dictionary of contexts
-#and the set of allophone pairs, and returns the underlying form
-#
-###
-'''
-The underlying form is the sound with the largest variety of features in 
-its complementary distribution set. This is determined by taking each pair
-of allophones, and the direction of its environment contrast. For each
-allophone in the pair, we step through the contexts determined by the 
-environment and use set union to determine the set of all features
-associated with the sound in this context. These sets are compared, 
-with the largest being compared to the global max set size. The sound
-with the largest set of unioned features is the underlying form. This
-is more easily seen with an example:
-
-    Given the set of allophones: [[p, pH, r]]
-    
-    we grab each such triplet of information (in this case just the one)
-    [p, pH, r]
-
-    we start with the empty set feat1.
-    we look at all the sounds occuring to the right of p (from the r flag)
-    From this we pick out the set of each sound's features and union
-    them together with feat1, to generate a set of all features associated
-    with the right context of p
-
-    we do the same thing for pH.
-
-    if the set of feature contexts of p is larger than pH, then we posit
-    that it is a possible underlying form. If we have seen no set
-    larger than the set for p, then p is the assumed underlying form.
-    A similar process occurs if pH is larger than p.
-
-    At the end of looking at all allophone pairs, we should return the 
-    phoneme that has the most diverse features in its context.
-
-def posit_underlying_form(features, contexts, allophones):
-
-    feats = load_features(features)
-    uf = ''
-    largest_set = 0
-    for pair in allophones:
-        allo1 = pair[0]
-        allo2 = pair[1]
-        env = 0
-        if pair[2] == "r":
-            env = 1
-        feat1 = Set([])
-        for context in contexts[allo1]:
-            sound = context[env]
-            #Adding word boundary as a feature
-            if sound == "#":
-                tmp = Set(["+WB"])
-            else:
-                tmp = Set(feats[sound])
-            feat1 = feat1 | tmp
-
-        feat2 = Set([])
-        for context in contexts[allo2]:
-            sound = context[env]
-            #Adding word boundary as a feature
-            if sound == "#":
-                tmp = Set(["+WB"])
-            else:
-                tmp = Set(feats[sound])
-            feat2 = feat2 | tmp
-
-        if len(feat1) > len(feat2):
-            if len(feat1) > largest_set:
-                largest_set = len(feat1)
-                uf = allo1
-        else:
-            if len(feat2) > largest_set:
-                largest_set = len(feat2)
-                uf = allo2
-
-    return uf
-
-'''
 
 if __name__ == "__main__":
 
     features = "features"
-    words = "words"
-    inventory = "chapter10_inv"
-    group = ['r', 'R', 'r*r', ':R']
+    inventory = "homework3_inv"
+    words = "homework3_words"
+    group = ['Ln', 'N']
     if len(sys.argv) == 2:
-        inventory = "homework3_inv"
-        words = "homework3_words"
-        group = ['Ln', 'N']
+        words = "words"
+        inventory = "chapter10_inv"
+        group = ['r', 'R', 'r*r', ':R']
 
     generate_rules(features, inventory, words, group)
 
     #group = ['tS', 'b', 'v', 'f', 'd', 'm', 'z']
-    #print group, is_natural_class(features, inventory, group)
+    group = ['N']
+    print group, is_natural_class(features, inventory, group)
 
     '''
 
