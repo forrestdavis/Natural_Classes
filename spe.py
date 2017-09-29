@@ -53,7 +53,8 @@ def is_natural_class(features, inventory, group, verbose=False):
     for x in range(len(group)):
         sound = group[x]
         if sound not in inv:
-            print "INVENTORY ERROR with ", sound
+            if sound != "#" and sound != "-":
+                print "INVENTORY ERROR with ", sound
             continue
         if x == 0:
             distinct_feats = feats[sound]
@@ -239,12 +240,6 @@ def generate_rules(features, inventory, word_file, group):
 
     return 0
 
-#TODO: How do we account for intervocalic? There must
-#be some way of checking the environment of allophones
-#so that you distinguish not just the difference between
-#uf and allophone environments, but also the fact 
-#that vowel to the left as a rule would overgenerate
-#A -> B / C
 def make_rules(feats, contexts, uf, allophones):
 
     rules = {}
@@ -260,7 +255,6 @@ def make_rules(feats, contexts, uf, allophones):
 
     group = [uf] + allophones
     A = is_natural_class(feats, inv, [uf])
-    print A
     for allophone in allophones:
         rule = [A]
         if allophone == uf:
@@ -279,7 +273,35 @@ def make_rules(feats, contexts, uf, allophones):
         for feat in B:
             #print feats[uf]
             if feat not in feats[uf]:
-                tmp.append(feat)
+                #Ignore features that do not apply to both
+                if feat[0] == "+":
+                    mod = "-"+ feat[1:]
+                else:
+                    mod = "+"+ feat[1:]
+                if mod in feats[uf]:
+                    tmp.append(feat)
+        #Natural Classes didnt work, need to look at full features
+        if not tmp:
+            for f1 in feats[allophone]:
+                if f1 not in feats[uf]:
+                    #Ignore features that do not apply to both
+                    if f1[0] == "+":
+                        mod = "-"+ f1[1:]
+                    else:
+                        mod = "+"+ f1[1:]
+                    if mod in feats[uf]:
+                        tmp.append(f1)
+            tmp1 = []
+            for feat in tmp:
+                if feat[0] == "+":
+                    mod = '-'+feat[1:]
+                else:
+                    mod = '+'+feat[1:]
+
+                if mod in A:
+                    tmp1.append(mod)
+            tmp = tmp1
+
         B = tmp
         rule.append(B)
         rule.append(C)
