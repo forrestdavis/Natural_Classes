@@ -4,19 +4,10 @@ Switch from natural classes to something like ranked
 generalizations that more and more narrowly define 
 the phonetic properties of a sound
 
-Rule generation is thus based on the most general features 
-that are able to distinguish a group of sounds from its
-other environments!!!!
-
-
 Get data from PBase, Mielke
 
 
+Update natural classes so that it conforms to the major -> minor class 
+distinctions
+
 Steps:
-
-- change contexts
-- rewrite environment direction
-- fix prune
-- Rule generation should be possible for any underlying form given a set of allophones
-
-

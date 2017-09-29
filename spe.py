@@ -244,18 +244,13 @@ def generate_rules(features, inventory, word_file, group):
 
     uf = posit_underlying_form(feats, allophones)
     rules = make_rules(feats, contexts, uf, allophones)
+    print rules
 
     '''
     write_rules(phonemes, allophones, rules, group, UF)
     '''
-
     return 0
 
-#TODO: How do we account for intervocalic? There must
-#be some way of checking the environment of allophones
-#so that you distinguish not just the difference between
-#uf and allophone environments, but also the fact 
-#that vowel to the left as a rule would overgenerate
 #A -> B / C
 def make_rules(feats, contexts, uf, allophones):
 
@@ -291,10 +286,7 @@ def make_rules(feats, contexts, uf, allophones):
         rule.append(C)
         rules[allophone] = rule
 
-    for pair in rules:
-        print pair, rules[pair]
-
-    return 0
+    return rules
 
 #Function that returns the contexts of the allophones, but rather
 #than a group of sounds, returns the general feature type.
@@ -344,14 +336,11 @@ def general_feat_contexts(feats, inv, contexts, allophones):
                     general_r = ["MISMATCH"]
                     break
 
-
         general_feat_con[sound] = {}
         general_feat_con[sound]['l'] = general_l
         general_feat_con[sound]['r'] = general_r
 
     return general_feat_con
-
-
 
 #Function that calculates which side of allophone is
 #contrastive. Returns {allophone: b/r/l}
@@ -459,7 +448,6 @@ def posit_underlying_form(feats, allophones):
             possible_uf = allophone
 
     return possible_uf
-
 
 def write_rules(phonemes, allophones, rules, group, UF):
 
