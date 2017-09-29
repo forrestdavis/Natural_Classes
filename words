@@ -1,6 +1,7 @@
 #Words broken up by phoneme 
 #Dash is any sound before (as in affix broad affix)
 
+#r
 r ae d
 r ae h b ae r*r
 r u m i z i
@@ -9,6 +10,8 @@ r u b a h
 r i z
 r u z n a m e
 r a h z d e n
+
+#r*r
 p ae r*r
 d i r*r
 p ae n i r*r
@@ -18,6 +21,8 @@ ae N u r*r
 m a r*r
 m ae s i r*r
 d i d a r*r
+
+#R
 p i R u z
 a R a m
 b i R u n
@@ -28,13 +33,17 @@ k ae R e
 t i R e
 t o R a b
 s u R a X
+
+#:R
 G ae :R tS
 s o :R b
-s ae R v
+s ae :R v
 z ae :R f
 m ae :R d
 g e :R d
 k e :R m
-tS ae :Rm
+tS ae :R m
 ae :R z
 l a :R v
+
+l a x v
